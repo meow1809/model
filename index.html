@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<button class="open-modal-btn" data-target="modal-1">Открыть окно 1</button>
+<button class="open-modal-btn" data-target="modal-2">Открыть окно 2</button>
+<script>
+    class Modal {
+  constructor(options = {}) {
+    this.title = options.title || 'Уведомление';
+    this.content = options.content || '';
+    this.dialog = null;
+    
+    this._init();
+  }
+
+  
+  _init() {
+    this.dialog = document.createElement('dialog');
+    this.dialog.classList.add('custom-modal');
+    
+    this.dialog.innerHTML = `
+      <div class="modal-header">
+        <h2>${this.title}</h2>
+        <button class="modal-close-btn" aria-label="Закрыть">&times;</button>
+      </div>
+      <div class="modal-body">
+        ${this.content}
+      </div>
+    `;
+
+    document.body.appendChild(this.dialog);
+    this._bindEvents();
+  }
+
+  
+  _bindEvents() {
+    const closeBtn = this.dialog.querySelector('.modal-close-btn');
+    
+    
+    closeBtn.addEventListener('click', () => this.close());
+    
+    
+    this.dialog.addEventListener('click', (e) => {
+      if (e.target === this.dialog) {
+        this.close();
+      }
+    });
+  }
+
+
+  open() {
+    this.dialog.showModal(); 
+    document.body.style.overflow = 'hidden'; 
+  }
+
+ 
+  close() {
+    this.dialog.close();
+    document.body.style.overflow = ''; 
+  }
+}
+
+
+const modalOne = new Modal({
+  title: 'Мяу',
+  content: '<p>мяу мур.</p>'
+});
+
+const modalTwo = new Modal({
+  title: 'Успешно!',
+  content: '<p>мя.</p>'
+});
+
+
+document.querySelectorAll('.open-modal-btn').forEach(button => {
+  button.addEventListener('click', () => {
+    const target = button.getAttribute('data-target');
+    
+    if (target === 'modal-1') modalOne.open();
+    if (target === 'modal-2') modalTwo.open();
+  });
+});
+
+</script>
+
+</body>
+</html>
